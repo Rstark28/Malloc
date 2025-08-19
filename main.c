@@ -1,24 +1,44 @@
+#include "rb_malloc.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "rb_malloc.h"
+#include <string.h>
 
-int main() {
-    size_t sizes[12];
-    for (int i = 0; i < 12; i++) {
-        sizes[i] = (rand() % 100) + 1; // random values between 1 and 100
-    }
-    int n = sizeof(sizes) / sizeof(sizes[0]);
+int main(void)
+{
+        printf("=== Demo ===\n");
 
-    for (int i = 0; i < n; i++) {
-        rb_malloc(sizes[i]);
-        printf("After inserting %zu:\n", sizes[i]);
-        print_rb_extern();
-        printf("----\n");
-    }
-    printf("Sizes:\n");
-    for (int i = 0; i < n; i++) {
-        printf("%zu ", sizes[i]);
-    }
-    printf("\n");
-    return 0;
+        int *arr = rb_malloc(10 * sizeof(int));
+        for (int i = 0; i < 10; i++) {
+                arr[i] = i * i;
+        }
+        printf("arr[0]=%d arr[9]=%d\n", arr[0], arr[9]);
+
+        char *reuse = rb_malloc(32);
+        strcpy(reuse, "Block reuse");
+        printf("reuse = %s\n", reuse);
+
+        arr = rb_realloc(arr, 20 * sizeof(int));
+        for (int i = 10; i < 20; i++) {
+                arr[i] = i * i;
+        }
+        printf("arr[15]=%d arr[19]=%d (after grow)\n", arr[15], arr[19]);
+
+        arr = rb_realloc(arr, 5 * sizeof(int));
+        printf("arr[4]=%d (after shrink)\n", arr[4]);
+
+        void *blocks[5];
+        for (int i = 0; i < 5; i++) {
+                blocks[i] = rb_malloc(16);
+                printf("allocated block[%d] at %p\n", i, blocks[i]);
+        }
+
+        rb_free(blocks[1]);
+        rb_free(blocks[3]);
+        printf("freed block[1] and block[3]\n");
+
+        void *x = rb_malloc(16);
+        printf("new block x reused? %p\n", x);
+
+        printf("=== Done ===\n");
+        return 0;
 }
