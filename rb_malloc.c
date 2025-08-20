@@ -441,11 +441,11 @@ static void delete_rb(struct meta *z)
         }
 }
 
-static int is_black(struct meta *n)
+static inline int is_black(struct meta *n)
 {
         return !n || n->color == BLACK; // NULL is considered black
 }
-static int is_red(struct meta *n)
+static inline int is_red(struct meta *n)
 {
         return n && n->color == RED;
 }
