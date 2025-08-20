@@ -8,11 +8,20 @@
 enum { RED = 0, BLACK = 1 };
 enum { ALLOCATED = 0, FREE = 1 };
 
+/**
+ * @brief Structure representing a memory block.
+ * size: Size of the memory block (excluding meta).
+ * l: Pointer to the left child in the red-black tree.
+ * r: Pointer to the right child in the red-black tree.
+ * p: Pointer to the parent node in the red-black tree.
+ * color: Color of the node (RED or BLACK).
+ * state: State of the block (ALLOCATED or FREE).
+ */
 struct meta {
         size_t size;
         struct meta *l, *r, *p;
         uint8_t color; // RED/BLACK
-        uint8_t state; // FREE/ALLOCATED
+        uint8_t state; // ALLOCATED/FREE
 };
 
 static struct meta *root = NULL;
@@ -550,11 +559,21 @@ static void rb_delete_fixup(struct meta *x, struct meta *x_parent)
 }
 
 /* ---------- Debug ---------- */
+
+/**
+ * @brief Print the red-black tree for debugging.
+ * Allows external call and use of global var root.
+ */
 void print_rb_extern(void)
 {
         print_tree(root, 0);
 }
 
+/**
+ * @brief Print the red-black tree recursively.
+ * @param node Pointer to the current node.
+ * @param depth Current depth in the tree.
+ */
 static void print_tree(struct meta *node, int depth)
 {
         if (!node) {
